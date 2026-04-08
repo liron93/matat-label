@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Label Manager - Copy This Code</title>
+    <style>
+        body { font-family: Arial; max-width: 900px; margin: 50px auto; padding: 20px; }
+        .code-block { background: #222; color: #0f0; padding: 20px; border-radius: 8px; overflow-x: auto; }
+        code { font-family: 'Courier New'; }
+        button { background: #0066cc; color: white; padding: 12px 20px; border: none; border-radius: 6px; cursor: pointer; font-size: 16px; }
+        button:hover { background: #0052a3; }
+        .step { margin: 30px 0; padding: 20px; background: #f5f5f5; border-left: 4px solid #0066cc; }
+        h1 { color: #0066cc; }
+        .success { color: green; }
+    </style>
+</head>
+<body>
+    <h1>🚀 Shopify Label Manager - Quick Install</h1>
+    
+    <div class="step">
+        <h2>עברור 1: העתק את הקוד</h2>
+        <p>קליק על הכפתור וקוד אוטומטית יעבור ללוח הגזירה שלך:</p>
+        <button onclick="copyCode()">📋 Copy Code</button>
+        <div class="code-block" id="code">
+<!-- Shopify Label Manager -->
+<script>
+(function(){
+  const c = document.createElement("div");
+  c.id = "lm-container";
+  c.style.cssText = "border:none;position:fixed;bottom:20px;right:20px;width:400px;max-height:600px;z-index:99999;";
+  fetch("https://raw.githubusercontent.com/liron93/matat-label/main/shopify-label-manager.html")
+    .then(r => r.text())
+    .then(html => {
+      c.innerHTML = html;
+      document.body.appendChild(c);
+    });
+})();
+</script>
+        </div>
+    </div>
+
+    <div class="step">
+        <h2>שלב 2: כנס לעיצוב שלך</h2>
+        <ol>
+            <li>כנס ל-Shopify Admin</li>
+            <li>Settings → Online Store → Themes</li>
+            <li>לחץ "Edit code" בעיצוב הפעיל</li>
+        </ol>
+    </div>
+
+    <div class="step">
+        <h2>שלב 3: מצא את theme.liquid</h2>
+        <ol>
+            <li>בתפריט השמאלי, בחר <strong>layout</strong></li>
+            <li>לחץ על <strong>theme.liquid</strong></li>
+        </ol>
+    </div>
+
+    <div class="step">
+        <h2>שלב 4: הוסף את הקוד</h2>
+        <ol>
+            <li>גרול לתחתית הקובץ</li>
+            <li>חפש את <code>&lt;/body&gt;</code></li>
+            <li>הדבק את הקוד <strong>לפני</strong> <code>&lt;/body&gt;</code></li>
+        </ol>
+    </div>
+
+    <div class="step">
+        <h2>שלב 5: שמור</h2>
+        <ol>
+            <li>לחץ <strong>Save</strong> בפינה הימנית העליונה</li>
+            <li>חכה 30 שניות</li>
+            <li>כנס לחנות שלך וראה את היישומון בפינה הימנית התחתונה! ✅</li>
+        </ol>
+    </div>
+
+    <script>
+        function copyCode() {
+            const code = document.getElementById("code").textContent;
+            navigator.clipboard.writeText(code).then(() => {
+                alert("✅ קוד הועתק! עכשיו הדבק אותו בעיצוב");
+            });
+        }
+    </script>
+</body>
+</html>
