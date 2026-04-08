@@ -1,0 +1,10 @@
+scopes = "write_products,read_products"
+
+[settings]
+base_url = "https://localhost:3000"
+
+[webhooks]
+api_version = "2024-01"
+
+[auth]
+redirect_urls = ["https://localhost:3000/auth/callback"]

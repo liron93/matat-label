@@ -1,0 +1,31 @@
+{
+  "name": "shopify-label-manager",
+  "version": "1.0.0",
+  "description": "A Shopify app for managing product labels",
+  "main": "web/index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node web/index.js",
+    "dev": "nodemon web/index.js",
+    "build": "echo 'No build step required for this MVP'",
+    "test": "echo 'No tests configured yet'"
+  },
+  "keywords": [
+    "shopify",
+    "app",
+    "label-manager"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "body-parser": "^1.20.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}
