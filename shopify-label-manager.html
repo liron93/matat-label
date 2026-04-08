@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopify Label Manager</title>
+    <style>
+        #shopify-label-manager { 
+            position: fixed; 
+            bottom: 20px; 
+            right: 20px; 
+            z-index: 99999; 
+            width: 400px; 
+            max-height: 600px; 
+            background: white; 
+            border-radius: 12px; 
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2); 
+            overflow-y: auto; 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; 
+        }
+        #shopify-label-manager * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+        }
+        .label-manager-header { 
+            padding: 20px; 
+            background: #0066cc; 
+            color: white; 
+            border-radius: 12px 12px 0 0; 
+        }
+        .label-manager-content { 
+            padding: 20px; 
+        }
+        .label-manager-tab { 
+            padding: 10px 15px; 
+            background: none; 
+            border: none; 
+            cursor: pointer; 
+            color: #666; 
+            border-bottom: 2px solid transparent; 
+            margin-right: 10px; 
+            font-weight: 500; 
+            transition: all 0.3s; 
+        }
+        .label-manager-tab.active { 
+            color: #0066cc; 
+            border-bottom-color: #0066cc; 
+        }
+        .label-manager-form-group { 
+            margin-bottom: 15px; 
+        }
+        .label-manager-form-group label { 
+            display: block; 
+            margin-bottom: 8px; 
+            font-weight: 500; 
+            font-size: 13px; 
+            color: #333; 
+        }
+        .label-manager-form-group input, 
+        .label-manager-form-group select { 
+            width: 100%; 
+            padding: 8px 12px; 
+            border: 1px solid #ddd; 
+            border-radius: 6px; 
+            font-size: 13px; 
+            font-family: inherit; 
+        }
+        .label-manager-position-grid { 
+            display: grid; 
+            grid-template-columns: repeat(3, 1fr); 
+            gap: 8px; 
+            margin: 10px 0; 
+        }
+        .label-manager-pos-btn { 
+            padding: 10px; 
+            border: 2px solid #ddd; 
+            background: white; 
+            border-radius: 6px; 
+            cursor: pointer; 
+            font-size: 11px; 
+            font-weight: 500; 
+            transition: all 0.3s; 
+        }
+        .label-manager-pos-btn:hover { 
+            border-color: #0066cc; 
+        }
+        .label-manager-pos-btn.active { 
+            background: #0066cc; 
+            color: white; 
+            border-color: #0066cc; 
+        }
+        .label-manager-btn { 
+            padding: 10px 15px; 
+            border: none; 
+            border-radius: 6px; 
+            cursor: pointer; 
+            font-weight: 500; 
+            font-size: 13px; 
+            transition: all 0.3s; 
+        }
+        .label-manager-btn-primary { 
+            background: #0066cc; 
+            color: white; 
+        }
+        .label-manager-btn-danger { 
+            background: #ff6b6b; 
+            color: white; 
+        }
+        .label-manager-label-card { 
+            background: #f9f9f9; 
+            border: 1px solid #ddd; 
+            border-radius: 8px; 
+            padding: 12px; 
+            margin-bottom: 12px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+        }
+        .label-manager-preview { 
+            width: 80px; 
+            height: 50px; 
+            border-radius: 4px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            color: white; 
+            font-weight: bold; 
+            font-size: 11px; 
+            text-align: center; 
+            padding: 5px; 
+            margin: 0 10px; 
+        }
+        .label-manager-empty { 
+            text-align: center; 
+            padding: 20px; 
+            color: #999; 
+            font-size: 13px; 
+        }
+        .label-injected { 
+            position: absolute; 
+            z-index: 10; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            padding: 6px 10px; 
+            border-radius: 4px; 
+            font-size: 11px; 
+            font-weight: bold; 
+        }
+        .pos-left-top { top: 8px; left: 8px; }
+        .pos-center-top { top: 8px; left: 50%; transform: translateX(-50%); }
+        .pos-right-top { top: 8px; right: 8px; }
+        .pos-left-center { top: 50%; left: 8px; transform: translateY(-50%); }
+        .pos-center-center { top: 50%; left: 50%; transform: translate(-50%, -50%); }
+        .pos-right-center { top: 50%; right: 8px; transform: translateY(-50%); }
+        .pos-left-bottom { bottom: 8px; left: 8px; }
+        .pos-center-bottom { bottom: 8px; left: 50%; transform: translateX(-50%); }
+        .pos-right-bottom { bottom: 8px; right: 8px; }
+    </style>
+</head>
+<body>
+    <div id="shopify-label-manager">
+        <div class="label-manager-header"><h3>📌 Label Manager</h3></div>
+        <div class="label-manager-content">
+            <div style="border-bottom: 1px solid #ddd; margin-bottom: 15px;">
+                <button class="label-manager-tab active" onclick="window.labelManagerTab('list')">My Labels</button>
+                <button class="label-manager-tab" onclick="window.labelManagerTab('create')">Create</button>
+            </div>
+            <div id="label-manager-list" style="display: block;">
+                <div id="labels-list"></div>
+            </div>
+            <div id="label-manager-create" style="display: none;">
+                <form id="label-form">
+                    <div class="label-manager-form-group">
+                        <label>Label Name</label>
+                        <input type="text" id="label-name" required>
+                    </div>
+                    <div class="label-manager-form-group">
+                        <label>Label Text</label>
+                        <input type="text" id="label-text" required>
+                    </div>
+                    <div class="label-manager-form-group">
+                        <label>Background Color</label>
+                        <input type="color" id="label-bg-color" value="#ff0000">
+                    </div>
+                    <div class="label-manager-form-group">
+                        <label>Text Color</label>
+                        <input type="color" id="label-text-color" value="#ffffff">
+                    </div>
+                    <div class="label-manager-form-group">
+                        <label>Position</label>
+                        <div class="label-manager-position-grid">
+                            <button type="button" class="label-manager-pos-btn" data-pos="left-top">↖</button>
+                            <button type="button" class="label-manager-pos-btn" data-pos="center-top">⬆</button>
+                            <button type="button" class="label-manager-pos-btn" data-pos="right-top active">↗</button>
+                            <button type="button" class="label-manager-pos-btn" data-pos="left-center">⬅</button>
+                            <button type="button" class="label-manager-pos-btn" data-pos="center-center">◉</button>
+                            <button type="button" class="label-manager-pos-btn" data-pos="right-center">➡</button>
+                            <button type="button" class="label-manager-pos-btn" data-pos="left-bottom">↙</button>
+                            <button type="button" class="label-manager-pos-btn" data-pos="center-bottom">⬇</button>
+                            <button type="button" class="label-manager-pos-btn" data-pos="right-bottom">↘</button>
+                        </div>
+                    </div>
+                    <button type="submit" class="label-manager-btn label-manager-btn-primary">Save Label</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function(){
+            window.labelManagerTab = function(t) {
+                document.getElementById('label-manager-list').style.display = t === 'list' ? 'block' : 'none';
+                document.getElementById('label-manager-create').style.display = t === 'create' ? 'block' : 'none';
+                document.querySelectorAll('.label-manager-tab').forEach(e => e.classList.remove('active'));
+                event.target.classList.add('active');
+            };
+
+            window.deleteLabel = function(id) {
+                if (confirm('Delete?')) {
+                    let l = JSON.parse(localStorage.getItem('shopifyLabels') || '[]');
+                    l = l.filter(x => x.id !== id);
+                    localStorage.setItem('shopifyLabels', JSON.stringify(l));
+                    renderLabels();
+                    injectLabels();
+                }
+            };
+
+            function renderLabels() {
+                const l = JSON.parse(localStorage.getItem('shopifyLabels') || '[]');
+                const lst = document.getElementById('labels-list');
+                if (l.length === 0) {
+                    lst.innerHTML = '<div class="label-manager-empty">No labels</div>';
+                    return;
+                }
+                lst.innerHTML = l.map(lb => `
+                    <div class="label-manager-label-card">
+                        <div style="flex: 1; font-size: 12px;">
+                            <strong>${lb.name}</strong><br>
+                            <small style="color: #666;">Text: ${lb.text}</small>
+                        </div>
+                        <div class="label-manager-preview" style="background-color: ${lb.bgColor}; color: ${lb.textColor};">${lb.text}</div>
+                        <button class="label-manager-btn label-manager-btn-danger" onclick="window.deleteLabel('${lb.id}')" style="padding: 6px 10px; font-size: 12px;">Delete</button>
+                    </div>
+                `).join('');
+            }
+
+            function setupPositionButtons() {
+                document.querySelectorAll('[data-pos]').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        document.querySelectorAll('[data-pos]').forEach(b => b.classList.remove('active'));
+                        btn.classList.add('active');
+                    });
+                });
+                document.querySelector('[data-pos="right-top"]').classList.add('active');
+            }
+
+            document.getElementById('label-form').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const sp = document.querySelector('[data-pos].active').dataset.pos;
+                const [h, v] = sp.split('-');
+                const lb = {
+                    id: Date.now().toString(),
+                    name: document.getElementById('label-name').value,
+                    text: document.getElementById('label-text').value,
+                    bgColor: document.getElementById('label-bg-color').value,
+                    textColor: document.getElementById('label-text-color').value,
+                    horizontal: h,
+                    vertical: v
+                };
+                let labels = JSON.parse(localStorage.getItem('shopifyLabels') || '[]');
+                labels.push(lb);
+                localStorage.setItem('shopifyLabels', JSON.stringify(labels));
+                document.getElementById('label-form').reset();
+                setupPositionButtons();
+                renderLabels();
+                injectLabels();
+                window.labelManagerTab('list');
+            });
+
+            function injectLabels() {
+                document.querySelectorAll('.label-injected').forEach(el => el.remove());
+                const labels = JSON.parse(localStorage.getItem('shopifyLabels') || '[]');
+                const prods = document.querySelectorAll('[data-product-id], .product-item, .product, .grid__item');
+                labels.forEach(lb => {
+                    prods.forEach(prod => {
+                        const lbl = document.createElement('div');
+                        lbl.className = `label-injected pos-${lb.horizontal}-${lb.vertical}`;
+                        lbl.textContent = lb.text;
+                        lbl.style.backgroundColor = lb.bgColor;
+                        lbl.style.color = lb.textColor;
+                        if (prod.style.position !== 'absolute' && prod.style.position !== 'relative' && prod.style.position !== 'fixed') {
+                            prod.style.position = 'relative';
+                        }
+                        prod.appendChild(lbl);
+                    });
+                });
+            }
+
+            renderLabels();
+            setupPositionButtons();
+            window.addEventListener('load', injectLabels);
+            const obs = new MutationObserver(injectLabels);
+            obs.observe(document.body, { childList: true, subtree: true });
+        })();
+    </script>
+</body>
+</html>
