@@ -86,3 +86,11 @@ app.get('/api/health', (req, res) => {
 app.listen(PORT, () => {
   console.log(`✅ Label Manager running on port ${PORT}`);
 });
+
+// Shopify Auth callback (simplified for testing)
+app.get('/auth/callback', (req, res) => {
+  // In production, verify the HMAC and exchange code for access token
+  // For now, just confirm the callback works
+  res.json({ message: 'Auth callback received' });
+});
+

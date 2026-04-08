@@ -1,10 +1,12 @@
-scopes = "write_products,read_products"
+scopes = "write_products,read_products,write_orders"
+name = "Label Manager"
+description = "Create and manage product labels"
 
 [settings]
-base_url = "https://shopify-label-manager.vercel.app"
+base_url = "http://localhost:3000"
 
 [webhooks]
 api_version = "2024-01"
 
 [auth]
-redirect_urls = ["https://shopify-label-manager.vercel.app/auth/callback"]
+redirect_urls = ["http://localhost:3000/auth/callback"]
