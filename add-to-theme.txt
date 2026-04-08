@@ -1,0 +1,12 @@
+<!-- Label Manager Admin App -->
+<script>
+if (window.Shopify && window.Shopify.designMode === false) {
+  // Create a link to the Label Manager app in admin
+  const appLink = document.createElement('a');
+  appLink.id = 'label-manager-link';
+  appLink.style.display = 'none';
+  appLink.href = 'http://localhost:3000';
+  document.body.appendChild(appLink);
+}
+</script>
+<!-- End Label Manager -->
